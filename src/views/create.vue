@@ -25,9 +25,6 @@
           <!-- <clipper-preview  name="preview"></clipper-preview> -->
           <image-input v-model="avatar">
             <div slot="activator">
-              <!-- <v-avatar size="120px" v-ripple v-if="!avatar" class="grey lighten-3">
-                                <v-icon>mdi-plus</v-icon>
-                            </v-avatar> -->
               <v-sheet
                 v-if="!avatar"
                 class="grey lighten-4 mx-auto"
@@ -37,7 +34,7 @@
                 style="cursor: pointer"
               >
                 <v-layout justify-center fill-height>
-                  <v-icon color="deep-purple darken-5" large>mdi-plus</v-icon>
+                  <v-icon color="deep-purple darken-4" large>mdi-plus</v-icon>
                 </v-layout>
               </v-sheet>
               <p
@@ -56,9 +53,10 @@
                 max-width="95%"
                 contain
                 alt="loading..."
+                class="mx-auto"
                 style="cursor: pointer"
               ></v-img>
-              <p v-if="avatar" class="overline grey--text">
+              <p v-if="avatar" class="overline grey--text layout justify-center">
                 click over the image to change
               </p>
             </div>
@@ -66,7 +64,7 @@
         </v-flex>
         <v-flex xs12 md7 pl-3 pr-5 justify-center>
           <v-text-field
-            color="deep-purple darken-5"
+            color="deep-purple darken-4"
             label="Event Name"
             v-model="name"
           ></v-text-field>
@@ -87,7 +85,7 @@
             chips
             deletable-chips
             required
-            color="deep-purple darken-5"
+            color="deep-purple darken-4"
           >
           </v-combobox>
           <v-row>
@@ -100,7 +98,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  color="deep-purple darken-5"
+                  color="deep-purple darken-4"
                   label="Event start date"
                   readonly
                   v-bind="attrs"
@@ -112,14 +110,14 @@
               </template>
               <v-date-picker
                 v-model="startDate"
-                color="deep-purple darken-5"
-                header-color="deep-purple darken-5"
+                color="deep-purple darken-4"
+                header-color="deep-purple darken-4"
                 scrollable
               >
                 <v-spacer></v-spacer>
                 <v-btn
                   text
-                  color="deep-purple darken-5"
+                  color="deep-purple darken-4"
                   @click="startDateMenu = false"
                 >
                   ok
@@ -127,38 +125,6 @@
               </v-date-picker>
             </v-menu>
 
-            <v-menu
-              v-model="endDateMenu"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  color="deep-purple darken-5"
-                  label="Event end date (optional) "
-                  readonly
-                  v-bind="attrs"
-                  v-on="on"
-                  v-model="endDate"
-                  clearable
-                  class="pl-5 pr-4"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                v-model="endDate"
-                color="deep-purple darken-5"
-                header-color="deep-purple darken-5"
-                scrollable
-                @dblclick:date="endDateMenu = false"
-              >
-                <v-spacer></v-spacer>
-              </v-date-picker>
-            </v-menu>
-          </v-row>
-
-          <v-row>
             <v-menu
               v-model="startTimeMenu"
               :close-on-content-click="false"
@@ -168,12 +134,12 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
-                  color="deep-purple darken-5"
+                  color="deep-purple darken-4"
                   label="Event start Time"
                   readonly
                   v-bind="attrs"
                   v-on="on"
-                  v-model="startTime"
+                  v-model="startTimeShow"
                   class="pl-3"
                   clearable
                   width="200"
@@ -181,14 +147,13 @@
               </template>
               <v-time-picker
                 v-model="startTime"
-                color="deep-purple darken-5"
-                header-color="deep-purple darken-5"
-                scrollable
+                color="deep-purple darken-4"
+                header-color="deep-purple darken-4"
               >
                 <v-spacer></v-spacer>
                 <v-btn
                   text
-                  color="deep-purple darken-5"
+                  color="deep-purple darken-4"
                   @click="startTimeMenu = false"
                 >
                   ok
@@ -196,6 +161,7 @@
               </v-time-picker>
             </v-menu>
           </v-row>
+
           <v-row align="center" class="pl-3">
             <div class="pr-5">
               <p class="overline grey--text">
@@ -207,7 +173,7 @@
                   :key="i"
                   :label="`${n.name}`"
                   :value="n.bool"
-                  color="deep-purple darken-5"
+                  color="deep-purple darken-4"
                 ></v-radio>
               </v-radio-group>
             </div>
@@ -222,20 +188,24 @@
                   :key="i"
                   :label="`${n.name}`"
                   :value="n.bool"
-                  color="deep-purple darken-5"
+                  color="deep-purple darken-4"
                 ></v-radio>
               </v-radio-group>
             </div>
           </v-row>
           <v-text-field
-                  color="deep-purple darken-5"
-                  :label="`${ type ? 'Event link' : 'Location link (google map) ' } (optional)`"
-                  v-if="(type !== null)"
-                  v-model="modelink"
-                  clearable
-                ></v-text-field>
+            color="deep-purple darken-4"
+            :label="
+              `${
+                type ? 'Event link' : 'Location link (google map) '
+              } (optional)`
+            "
+            v-if="type !== null"
+            v-model="modelink"
+            clearable
+          ></v-text-field>
           <v-checkbox
-            color="deep-purple darken-5"
+            color="deep-purple darken-4"
             v-model="registration"
             :label="`Open for Registration: ${registration.toString()}`"
           ></v-checkbox>
@@ -255,18 +225,31 @@ export default {
     imageInput,
   },
   data: () => ({
+    dialog: false,
     user: null,
     registration: true,
     modelink: null,
     types: [
-      { name: "Online", bool: true },
-      { name: "Offline", bool: false },
+      {
+        name: "Online",
+        bool: true,
+      },
+      {
+        name: "Offline",
+        bool: false,
+      },
     ], //online means true
     type: null,
     privacy: true,
     privacys: [
-      { name: "Only me", bool: false },
-      { name: "Public", bool: true },
+      {
+        name: "Only me",
+        bool: false,
+      },
+      {
+        name: "Public",
+        bool: true,
+      },
     ],
     actionType: null,
     startDateMenu: false,
@@ -282,6 +265,7 @@ export default {
     startDate: null,
     endDate: null,
     startTime: null,
+    startTimeShow: null,
     endTime: null,
     orginalImage: null,
     editorConfig: {
@@ -315,7 +299,7 @@ export default {
     },
     startTime: {
       handler: function() {
-        this.startTime = this.tConvert(this.startTime);
+        this.startTimeShow = this.tConvert(this.startTime);
       },
     },
   },
@@ -326,6 +310,7 @@ export default {
         !this.name ||
         !this.avatar ||
         !this.startDate ||
+        !this.startTime ||
         !this.type.toString() ||
         !this.desc
       ) {
@@ -335,57 +320,64 @@ export default {
           // same image
           let body = {
             name: this.name,
-            start: this.startDate,
+            start: this.startDate + "," + this.startTime,
             mode: this.type,
             public: this.privacy,
             registration: this.registration,
             desc: this.desc,
             tags: this.tags ? this.tags[0].split(",") : null,
-            end: this.end
-          }
-          axios.put(this.$hostname + "/post/update", body, {
-            params: {
-              postId : this.$router.currentRoute.params.pk,
-              userId: this.user._id
-            }
-          }).then(res => {
-            if (res.data.status){
-               this.$vToastify.success(res.data.message);
-               this.$router.push("/dashboard");
-            }else{
-               this.$vToastify.error(res.data.message);
-            }
-          }).catch(err => console.log(err));
-
+            end: this.end,
+            modelink: this.modelink
+          };
+          axios
+            .put(this.$hostname + "/post/update", body, {
+              params: {
+                postId: this.$router.currentRoute.params.pk,
+                userId: this.user._id,
+              },
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.$vToastify.success(res.data.message);
+                this.$router.push("/dashboard");
+              } else {
+                this.$vToastify.error(res.data.message);
+              }
+            })
+            .catch((err) => console.log(err));
         } else {
           //image change
           axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
           let formData = new FormData();
           formData.append("file", this.file);
           formData.append("name", this.name);
-          formData.append("start", this.startDate);
+          formData.append("start", this.startDate + "," + this.startTime);
           formData.append("mode", this.type);
           formData.append("public", this.privacy);
           formData.append("registration", this.registration);
           formData.append("desc", this.desc);
           formData.append("tags", this.tags);
           formData.append("end", this.endDate);
+          formData.append("modelink", this.modelink)
           let ev = this.orginalImage.split("/");
-          axios.put(this.$hostname + "/post/update", formData, {
-            params: {
-              postId : this.$router.currentRoute.params.pk,
-              userId: this.user._id,
-              withImage: true,
-              orginalImage: ev[ev.length - 1]
-            }
-          }).then(res => {
-            if (res.data.status){
-               this.$vToastify.success(res.data.message);
-               this.$router.push("/dashboard");
-            }else{
-               this.$vToastify.error(res.data.message);
-            }
-          }).catch(err => console.log(err));
+          axios
+            .put(this.$hostname + "/post/update", formData, {
+              params: {
+                postId: this.$router.currentRoute.params.pk,
+                userId: this.user._id,
+                withImage: true,
+                orginalImage: ev[ev.length - 1],
+              },
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.$vToastify.success(res.data.message);
+                this.$router.push("/dashboard");
+              } else {
+                this.$vToastify.error(res.data.message);
+              }
+            })
+            .catch((err) => console.log(err));
         }
       }
     },
@@ -395,6 +387,7 @@ export default {
         !this.name ||
         !this.file ||
         !this.startDate ||
+        !this.startTime ||
         !this.type.toString() ||
         !this.desc
       ) {
@@ -404,7 +397,7 @@ export default {
         let formData = new FormData();
         formData.append("file", this.file);
         formData.append("name", this.name);
-        formData.append("start", this.startDate);
+        formData.append("start", this.startDate + "," + this.startTime);
         formData.append("mode", this.type);
         formData.append("public", this.privacy);
         formData.append("registration", this.registration);
@@ -412,6 +405,7 @@ export default {
         formData.append("tags", this.tags);
         formData.append("end", this.endDate);
         formData.append("admin", this.user._id);
+        formData.append("modelink", this.modelink)
         axios
           .post(this.$hostname + "/post/save", formData)
           .then((res) => {
@@ -457,10 +451,12 @@ export default {
             this.avatar = this.$hostname + "/images/" + event.image;
             this.orginalImage = this.$hostname + "/images/" + event.image;
             this.tags = event.tags == "null" ? null : event.tags;
-            this.startDate = event.start;
+            this.startDate = event.start.split(",")[0];
+            this.startTime = event.start.split(",")[1];
             this.type = event.mode;
             this.privacy = event.public;
             this.registration = event.registration;
+            this.modelink = event.modelink;
           } else {
             this.$vToastify.error(res.data.message);
           }

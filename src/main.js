@@ -19,7 +19,7 @@ Vue.use(VueRx);
 Vue.use(VuejsClipper);
 Vue.use(VueToastify);
 Vue.config.productionTip = false;
-Vue.prototype.$hostname = (Vue.config.productionTip) ? 'https://hostname' : 'http://192.168.8.104:' + process.env.PORT;
+Vue.prototype.$hostname = (Vue.config.productionTip) ? 'https://hostname' : 'http://localhost:3400';
 
 new Vue({
   store,

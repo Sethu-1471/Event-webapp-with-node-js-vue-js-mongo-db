@@ -4,9 +4,9 @@
         <v-row align="center" justify="center">
             <v-col>
                 <v-card max-width="400px" class="mx-auto pa-5">
-                    <v-text-field v-model="email" label="Email" color="deep-purple accent-4"></v-text-field>
-                    <v-text-field v-model="password" label="Password" color="deep-purple accent-4" :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'" @click:append="() => (value = !value)" :type="value ? 'password' : 'text'" @keyup.enter="doLogin"></v-text-field>
-                    <v-btn class="deep-purple accent-4 white--text" @click="doLogin">
+                    <v-text-field v-model="email" label="Email" color="deep-purple darken-4"></v-text-field>
+                    <v-text-field v-model="password" label="Password" color="deep-purple darken-4" :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'" @click:append="() => (value = !value)" :type="value ? 'password' : 'text'" @keyup.enter="doLogin"></v-text-field>
+                    <v-btn class="deep-purple darken-4 white--text" @click="doLogin">
                         Login
                     </v-btn>
                 </v-card>

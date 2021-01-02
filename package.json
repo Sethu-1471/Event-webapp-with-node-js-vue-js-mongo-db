@@ -4,7 +4,7 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "node ./app",
+    "start": "npm run build && cross-env NODE_ENV=production node ./app",
     "client": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "server": "cross-env NODE_ENV=development nodemon ./app"

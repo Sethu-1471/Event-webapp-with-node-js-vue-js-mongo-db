@@ -35,6 +35,7 @@ const EventSchema = new mongoose.Schema({
         default: Date.now(),
         required: true
     },
+    modelink: String,
     public: {
         type: Boolean,
         required: true,

@@ -30,6 +30,7 @@ const savePost = async (req, res, next) => {
                         mode: req.body.mode,
                         public: req.body.public,
                         tags: req.body.tags,
+                        modelink: req.body.modelink ,
                         createdBy: await User.findById({ _id: req.body.admin }),
                         registration: req.body.registration
                     });
@@ -98,7 +99,8 @@ const updatePost = async(req, res) => {
                                 mode: req.body.mode,
                                 public: req.body.public,
                                 tags: req.body.tags,
-                                registration: req.body.registration
+                                registration: req.body.registration,
+                                modelink: req.body.modelink
                             }
                             var mongoose = require('mongoose');
                             var id = mongoose.Types.ObjectId((req.query.postId));

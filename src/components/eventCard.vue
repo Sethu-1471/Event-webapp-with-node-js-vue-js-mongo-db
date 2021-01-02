@@ -13,7 +13,7 @@
         mdi-clock-outline
       </v-icon>
       <span class="caption grey--text font-weight-light"
-        > {{ event.start  }} </span
+        > {{ event.start.split(",")[0] }}, {{ tConvert(event.start.split(",")[1]) }} </span
       >
       </div><div>
         <v-icon class="mr-2" small color="green">
@@ -42,10 +42,10 @@
     </v-card-text>
     <v-divider class="mx-4"></v-divider>
     <v-card-actions>
-      <v-btn v-if="!admin" :disabled="!event.registration" color="deep-purple darken-5" text>
+      <v-btn v-if="!admin" small :disabled="!event.registration" color="deep-purple darken-4" text>
         {{ event.registration ? "Attend" : "Registration closed" }}
       </v-btn>
-      <v-btn v-if="admin" color="deep-purple darken-5" class="white--text" small @click="$router.push('/edit/' + event._id)">
+      <v-btn v-if="admin" color="deep-purple darken-4" class="white--text" small @click="$router.push('/edit/' + event._id)">
         Edit
       </v-btn>
       <v-btn v-if="admin" color="red" small class="white--text" text @click="deleteEvent( event.createdBy._id ,event._id, event.image)">
@@ -57,7 +57,23 @@
 
 <script>
 export default {
-  props: [ "event", "admin", "deleteEvent" ]
+  props: [ "event", "admin", "deleteEvent" ],
+  methods: {
+    tConvert(time) {
+      // Check correct time format and split into components
+      time = time
+        .toString()
+        .match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+      if (time.length > 1) {
+        // If time format correct
+        time = time.slice(1); // Remove full string match value
+        time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+        time[0] = +time[0] % 12 || 12; // Adjust hours
+      }
+      return time.join(""); // return adjusted time or original string
+    },
+  }
 };
 </script>
 
