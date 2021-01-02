@@ -2,11 +2,12 @@
   "name": "event_frontend_vue",
   "version": "0.1.0",
   "private": true,
+  "main": "app.js",
   "scripts": {
+    "start": "node ./app",
     "client": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "server": "cross-env NODE_ENV=development nodemon ./app",
-    "start": "npm run build && cross-env NODE_ENV=production node ./app"
+    "server": "cross-env NODE_ENV=development nodemon ./app"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^24.0.0",
