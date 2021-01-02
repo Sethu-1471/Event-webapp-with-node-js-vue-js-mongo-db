@@ -38,6 +38,6 @@ app.get('/key', (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, console.log("Running on port", PORT, "mode", process.env.NODE_ENV));
