@@ -1,4 +1,4 @@
-# event_frontend_vue
+# Event-webapp-with-node-js-vue-js-mongo-db
 
 ## Project setup
 ```
@@ -20,6 +20,4 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
 "# Event-webapp-with-node-js-vue-js-mongo-db" 
