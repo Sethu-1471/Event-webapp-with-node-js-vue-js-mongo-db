@@ -73,7 +73,7 @@ const login = (req, res, next) => {
                     })
                 }
                 if (result) {
-                    let token = jwt.sign({ name: user.name }, setting.secret, { expiresIn: '24h' });
+                    let token = jwt.sign({ id: user._id }, setting.secret, { expiresIn: '24h' });
                     res.json({
                         status: true,
                         message: "logged in",

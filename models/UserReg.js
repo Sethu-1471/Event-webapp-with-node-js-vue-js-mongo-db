@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
 const UserRegSchema = new mongoose.Schema({
     name: {
@@ -30,7 +31,11 @@ const UserRegSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    }
+    },
+    myRegistration: [{
+        type: ObjectId,
+        ref: "Event"
+    }]
 })
 
 module.exports = mongoose.model('UserReg', UserRegSchema)

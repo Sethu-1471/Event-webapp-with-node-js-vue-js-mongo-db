@@ -14,6 +14,12 @@ router.get('/getbypublic', EventController.getPostByPublic);
 
 router.get('/getbyuserid', passport.authenticate('jwt', { session: false }), EventController.getPostByUserId);
 
+router.put('/attend', passport.authenticate('jwt', { session: false }), EventController.attendEvent);
+
+router.put('/unattend', passport.authenticate('jwt', { session: false }), EventController.unattendEvent);
+
+router.get('/sudoevent', passport.authenticate('jwt', { session: false }), EventController.getsudoEvent);
+
 router.get('/getbypostid', EventController.getPostByPostId);
 
 

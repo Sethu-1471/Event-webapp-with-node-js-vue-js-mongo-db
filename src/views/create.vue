@@ -56,7 +56,10 @@
                 class="mx-auto"
                 style="cursor: pointer"
               ></v-img>
-              <p v-if="avatar" class="overline grey--text layout justify-center">
+              <p
+                v-if="avatar"
+                class="overline grey--text layout justify-center"
+              >
                 click over the image to change
               </p>
             </div>
@@ -312,7 +315,8 @@ export default {
         !this.startDate ||
         !this.startTime ||
         !this.type.toString() ||
-        !this.desc
+        !this.desc ||
+        !this.tags
       ) {
         this.$vToastify.error("some fields are unfilled");
       } else {
@@ -325,15 +329,14 @@ export default {
             public: this.privacy,
             registration: this.registration,
             desc: this.desc,
-            tags: this.tags ? this.tags[0].split(",") : null,
+            tags: this.tags ? this.tags : null,
             end: this.end,
-            modelink: this.modelink
+            modelink: this.modelink,
           };
           axios
             .put(this.$hostname + "/post/update", body, {
               params: {
                 postId: this.$router.currentRoute.params.pk,
-                userId: this.user._id,
               },
             })
             .then((res) => {
@@ -344,7 +347,7 @@ export default {
                 this.$vToastify.error(res.data.message);
               }
             })
-            .catch((err) => console.log(err));
+            .catch((err) => this.$vToastify.error(err.message));
         } else {
           //image change
           axios.defaults.headers.post["Content-Type"] = "multipart/form-data";
@@ -358,13 +361,12 @@ export default {
           formData.append("desc", this.desc);
           formData.append("tags", this.tags);
           formData.append("end", this.endDate);
-          formData.append("modelink", this.modelink)
+          formData.append("modelink", this.modelink);
           let ev = this.orginalImage.split("/");
           axios
             .put(this.$hostname + "/post/update", formData, {
               params: {
                 postId: this.$router.currentRoute.params.pk,
-                userId: this.user._id,
                 withImage: true,
                 orginalImage: ev[ev.length - 1],
               },
@@ -389,7 +391,8 @@ export default {
         !this.startDate ||
         !this.startTime ||
         !this.type.toString() ||
-        !this.desc
+        !this.desc ||
+        !this.tags
       ) {
         this.$vToastify.error("some fields are unfilled");
       } else {
@@ -405,7 +408,7 @@ export default {
         formData.append("tags", this.tags);
         formData.append("end", this.endDate);
         formData.append("admin", this.user._id);
-        formData.append("modelink", this.modelink)
+        formData.append("modelink", this.modelink);
         axios
           .post(this.$hostname + "/post/save", formData)
           .then((res) => {
@@ -438,9 +441,7 @@ export default {
         .get(this.$hostname + "/post/getbypostid", {
           params: {
             postId: id,
-            userId: JSON.parse(localStorage.getItem("user"))
-              ? JSON.parse(localStorage.getItem("user"))._id
-              : null,
+            userId: this.user._id,
           },
         })
         .then((res) => {
@@ -465,8 +466,8 @@ export default {
   },
   created() {
     axios.defaults.headers.common["Authorization"] =
-      "Bearer " + localStorage.getItem("jwt");
-    this.user = JSON.parse(localStorage.getItem("user"));
+      "Bearer " + sessionStorage.getItem("jwt");
+    this.user = JSON.parse(sessionStorage.getItem("user"));
   },
   mounted() {
     if (

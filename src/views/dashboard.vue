@@ -3,6 +3,12 @@
     <v-banner single-line>
       Create and Host your event with us !!
       <template v-slot:actions>
+        <v-btn text color="red" class="white--text" @click="getMyEvent(user)">
+          refresh
+          <v-icon>
+            mdi-refresh
+          </v-icon>
+        </v-btn>
         <v-btn
           text
           color="deep-purple darken-4"
@@ -43,7 +49,7 @@
       <p class="upper">
         Registered events
       </p>
-      <v-row align="center" class="mx-0">
+      <v-row align="center" class="mx-0" v-if="!registeredEvents">
         <p>You doesn't register any event</p>
 
         <div class="grey--text ml-4">
@@ -56,7 +62,14 @@
           </v-btn>
         </div>
       </v-row>
-      <v-row align="end" justify="start">
+      <v-row align="end" justify="start" v-else>
+        <card
+          v-for="(event, i) in registeredEvents"
+          :key="i"
+          :event="event"
+          :user="user"
+          :unAttend="unAttend"
+        />
         <!-- <card v-for="i in 3" :key="i" /> -->
       </v-row>
     </v-container>
@@ -65,57 +78,85 @@
 
 <script>
 import card from "../components/eventCard";
-import axios from 'axios'
+import axios from "axios";
 export default {
   components: {
     card,
   },
   data: () => ({
     myEvent: null,
-    registeredEvent: null,
-    user: null
+    registeredEvents: null,
+    user: null,
   }),
   methods: {
     getMyEvent(id) {
-      axios.get(this.$hostname + "/post/getbyuserid", {
-        params: {
-          id: id._id
-        }
-      }).then(res => {
-        if (res.data.status) {
-          let od = res.data.events[0].start.split(',')
-          console.log(od);
-          let month = od[0].split('-');
-          console.log(month);
-          let time = od[1].split(':')
-          console.log(new Date(month[0], month[1], month[2], time[0], time[1]));
-          this.myEvent = res.data.events
-        }else {
-          this.$vToastify.error(res.data.message);
-        }
-      })
+      axios
+        .get(this.$hostname + "/post/getbyuserid", {
+          params: {
+            id: id._id,
+          },
+        })
+        .then((res) => {
+          if (res.data.status) {
+            // let od = res.data.events[0].start.split(',')
+            // console.log(od);
+            // let month = od[0].split('-');
+            // console.log(month);
+            // let time = od[1].split(':')
+            // console.log(new Date(month[0], month[1], month[2], time[0], time[1]));
+            this.myEvent = res.data.myEvents;
+            this.registeredEvents = res.data.registeredEvents;
+          } else {
+            this.$vToastify.error(res.data.message);
+          }
+        });
     },
-    deleteEvent(userId, postId, image){
-      axios.delete(this.$hostname + "/post/delete/", {
-        params: {
-          userId: userId,
-          postId: postId,
-          image: image
-        }
-      }).then(res => {
-        if (res.data.status) {
-          this.myEvent = res.data.events
-        }else {
-          this.$vToastify.error(res.data.message);
-        }
-      })
-    }
+
+    unAttend(id) {
+      if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
+        axios
+          .put(this.$hostname + "/post/unattend", id, {
+            params: {
+              postId: id,
+            },
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.$vToastify.success(res.data.message);
+              this.getMyEvent(JSON.parse(sessionStorage.getItem("user")));
+            } else {
+              this.$vToastify.error(res.data.message);
+            }
+          });
+      } else {
+        this.$router.push("/login");
+      }
+    },
+
+    deleteEvent(userId, postId, image) {
+      axios
+        .delete(this.$hostname + "/post/delete/", {
+          params: {
+            userId: userId,
+            postId: postId,
+            image: image,
+          },
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.$vToastify.success(res.data.message);
+            this.getMyEvent(JSON.parse(sessionStorage.getItem("user")));
+          } else {
+            this.$vToastify.error(res.data.message);
+          }
+        });
+    },
   },
   created() {
     axios.defaults.headers.common["Authorization"] =
-      "Bearer " + localStorage.getItem("jwt");
-    this.user = JSON.parse(localStorage.getItem("user"));
-    this.getMyEvent(JSON.parse(localStorage.getItem("user")));
+      "Bearer " + sessionStorage.getItem("jwt");
+    this.user = JSON.parse(sessionStorage.getItem("user"));
+    this.getMyEvent(JSON.parse(sessionStorage.getItem("user")));
   },
 };
 </script>

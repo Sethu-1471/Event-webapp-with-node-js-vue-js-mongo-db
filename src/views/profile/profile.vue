@@ -67,7 +67,7 @@ export default {
   data: () => ({
     image: null,
     value: true,
-    user: null
+    user: null,
   }),
   watch: {
     avatar: {
@@ -80,20 +80,19 @@ export default {
   created() {
     axios.defaults.headers.common["Authorization"] =
       "Bearer " + sessionStorage.getItem("jwt");
-    this.user = JSON.parse(localStorage.getItem("user"));
-    this.image = { imageURL: this.$hostname + "/" + JSON.parse(localStorage.getItem("user")).image };
+    this.user = JSON.parse(sessionStorage.getItem("user"));
+    this.image = {
+      imageURL:
+        this.$hostname + "/" + JSON.parse(sessionStorage.getItem("user")).image,
+    };
     // this.name = user.name;
     // this.email = user.email;
     // this.phoneNo = user.contactNo;
     // this.id = user._id;
     // this.password = user.password;
   },
-  mounted() {
-
-  },
-  methods: {
-    
-  },
+  mounted() {},
+  methods: {},
 };
 </script>
 

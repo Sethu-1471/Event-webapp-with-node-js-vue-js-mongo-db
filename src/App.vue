@@ -105,7 +105,7 @@ export default {
       // Let's check whether notification permissions have alredy been granted
       else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        if (!localStorage.getItem("notify")) this.triggerPushNotification();
+        if (!sessionStorage.getItem("notify")) this.triggerPushNotification();
       }
       // Otherwise, we need to ask the user for permission
       else if (
@@ -115,7 +115,7 @@ export default {
         Notification.requestPermission((permission) => {
           // If the user accepts, let's create a notification
           if (permission === "granted") {
-            if (!localStorage.getItem("user")) this.triggerPushNotification();
+            if (!sessionStorage.getItem("user")) this.triggerPushNotification();
           }
         });
       }
@@ -153,7 +153,7 @@ export default {
                     applicationServerKey: this.urlBase64ToUint8Array(res.data),
                   })
                   .then((sub) => {
-                    localStorage.setItem("notify", sub);
+                    sessionStorage.setItem("notify", sub);
                     axios
                       .post(
                         this.$hostname + "/notify/subscribe",
@@ -185,7 +185,7 @@ export default {
     },
 
     async logout() {
-      await localStorage.clear();
+      await sessionStorage.clear();
       this.$store.state.isAuthenticated = false;
       this.$store.state.isAdmin = false;
       this.$router.push("/login");
@@ -207,7 +207,7 @@ export default {
   font-family: "Hanalei Fill", cursive;
   font-size: 35px;
   letter-spacing: 1px;
-  color: #311B92;
+  color: #311b92;
 }
 
 .greyColor {
