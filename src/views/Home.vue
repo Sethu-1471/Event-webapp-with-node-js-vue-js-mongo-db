@@ -55,6 +55,8 @@
                   :attend="attend"
                   :user="user ? user : null"
                   :unAttend="unAttend"
+                  :save="save"
+                  :unSave="unSave"
                 />
               </v-col>
             </v-row>
@@ -154,6 +156,49 @@ export default {
     updateItemsPerPage(number) {
       this.itemsPerPage = number;
     },
+
+    save(id) {
+      if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
+        axios
+          .put(this.$hostname + "/post/save", id, {
+            params: {
+              postId: id,
+            },
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.$vToastify.success(res.data.message);
+              this.getPost();
+            } else {
+              this.$vToastify.error(res.data.message);
+            }
+          });
+      } else {
+        this.$router.push("/login");
+      }
+    },
+
+    unSave(id) {
+      if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
+        axios
+          .put(this.$hostname + "/post/unsave", id, {
+            params: {
+              postId: id,
+            },
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.$vToastify.success(res.data.message);
+              this.getPost();
+            } else {
+              this.$vToastify.error(res.data.message);
+            }
+          });
+      } else {
+        this.$router.push("/login");
+      }
+    },
+
     attend(id) {
       if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
         axios

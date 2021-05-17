@@ -69,8 +69,39 @@
           :event="event"
           :user="user"
           :unAttend="unAttend"
+          :attend="attend"
+          :save="save"
+          :unSave="unSave"
         />
         <!-- <card v-for="i in 3" :key="i" /> -->
+      </v-row>
+      <p class="upper">
+        your Saved events
+      </p>
+      <v-row align="center" class="mx-0" v-if="!savedEvents">
+        <p>You doesn't saved any event</p>
+
+        <div class="grey--text ml-4">
+          <v-btn
+            small
+            color=" white--text deep-purple darken-4"
+            @click="$router.push('/')"
+          >
+            register for Event
+          </v-btn>
+        </div>
+      </v-row>
+      <v-row align="end" justify="start" v-else>
+        <card
+          v-for="(event, i) in savedEvents"
+          :key="i"
+          :event="event"
+          :user="user"
+          :unAttend="unAttend"
+          :attend="attend"
+          :save="save"
+          :unSave="unSave"
+        />
       </v-row>
     </v-container>
   </div>
@@ -86,6 +117,7 @@ export default {
   data: () => ({
     myEvent: null,
     registeredEvents: null,
+    savedEvents: null,
     user: null,
   }),
   methods: {
@@ -106,10 +138,74 @@ export default {
             // console.log(new Date(month[0], month[1], month[2], time[0], time[1]));
             this.myEvent = res.data.myEvents;
             this.registeredEvents = res.data.registeredEvents;
+            this.savedEvents = res.data.savedEvents;
           } else {
             this.$vToastify.error(res.data.message);
           }
         });
+    },
+
+    attend(id) {
+      if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
+        axios
+          .put(this.$hostname + "/post/attend", id, {
+            params: {
+              postId: id,
+            },
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.$vToastify.success(res.data.message);
+              this.getMyEvent(JSON.parse(sessionStorage.getItem("user")));
+            } else {
+              this.$vToastify.error(res.data.message);
+            }
+          });
+      } else {
+        this.$router.push("/login");
+      }
+    },
+
+    save(id) {
+      if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
+        axios
+          .put(this.$hostname + "/post/save", id, {
+            params: {
+              postId: id,
+            },
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.$vToastify.success(res.data.message);
+              this.getMyEvent(JSON.parse(sessionStorage.getItem("user")));
+            } else {
+              this.$vToastify.error(res.data.message);
+            }
+          });
+      } else {
+        this.$router.push("/login");
+      }
+    },
+
+    unSave(id) {
+      if (sessionStorage.getItem("user") && sessionStorage.getItem("jwt")) {
+        axios
+          .put(this.$hostname + "/post/unsave", id, {
+            params: {
+              postId: id,
+            },
+          })
+          .then((res) => {
+            if (res.data.status) {
+              this.$vToastify.success(res.data.message);
+              this.getMyEvent(JSON.parse(sessionStorage.getItem("user")));
+            } else {
+              this.$vToastify.error(res.data.message);
+            }
+          });
+      } else {
+        this.$router.push("/login");
+      }
     },
 
     unAttend(id) {

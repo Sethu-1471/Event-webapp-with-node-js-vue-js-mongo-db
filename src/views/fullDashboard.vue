@@ -23,6 +23,7 @@
             :deleteEvent="deleteEvent"
             :full="true"
           />
+          
         </v-flex>
         <v-flex xs12 md8 text-xs-center>
           <v-card class="mt-4" elevation="0">
@@ -40,7 +41,6 @@
             <v-data-table
               v-model="selected"
               :headers="headers"
-              show-select
               item-key="sno"
               :items="participants"
               :search="search"
@@ -52,9 +52,59 @@
               </template>
             </v-data-table>
           </v-card>
+          <v-btn color="deep-purple darken-4"
+          class="white--text" @click="sendCertificate" :disabled="event.certificate">
+            {{ event.certificate ? "Certificate Posted" : "Send Certificate" }} 
+          </v-btn>
+          <v-btn color="deep-purple darken-4"
+          class="white--text ml-5" @click="dialog = true">
+            Show Feedbacks
+          </v-btn>
+          <v-btn color="deep-purple darken-4"
+          class="white--text ml-5" @click="callFunction">
+            Download Report
+          </v-btn>
         </v-flex>
       </v-layout>
     </v-container>
+
+
+    <!-- //Feedbacks -->
+    <v-dialog
+      v-model="dialog"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <v-toolbar
+          dark
+          color="#311b92"
+        >
+          <v-btn
+            icon
+            dark
+            @click="dialog = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Feedbacks</v-toolbar-title>
+        </v-toolbar>
+        <v-list
+          three-line
+          subheader
+        >
+          <v-list-item v-for="(feed, i) in event.feedback" :key="i">
+            <v-list-item-content>
+              <v-list-item-title> {{ feed.name }} </v-list-item-title>
+              <v-list-item-subtitle> {{ feed.feedback }} </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-divider></v-divider>
+      </v-card>
+    </v-dialog>
+
   </div>
 </template>
 
@@ -62,6 +112,7 @@
 import card from "../components/eventCard";
 // import nodemailer from "nodemailer";
 import axios from "axios";
+
 export default {
   components: {
     card,
@@ -71,6 +122,7 @@ export default {
     selected: [],
     search: null,
     participants: [],
+    dialog: false,
     headers: [
       {
         text: "SNo",
@@ -102,6 +154,12 @@ export default {
   }),
   watch: {},
   methods: {
+    callFunction(){
+      // implementation("org.springframework.boot:spring-boot-starter-web")
+      // implementation("org.apache.poi:poi:4.1.2")
+      // implementation("org.apache.poi:poi-ooxml:4.1.2")
+      console.error("Sorry,Your account is suspended")
+    },
     // async sendMail() {
     // let testAccount = await nodemailer.createTestAccount();
     // const transporter = nodemailer.createTransport({
@@ -129,6 +187,27 @@ export default {
     // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
     // },
+    sendCertificate() {
+      let body = {
+        certificate: true
+      }
+      axios
+            .put(this.$hostname + "/post/sendcertificate", body, {
+              params: {
+                postId: this.$router.currentRoute.params.pk,
+              },
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.$vToastify.success(res.data.message);
+                this.getmyEvent(this.$router.currentRoute.params.pk);
+              } else {
+                this.$vToastify.error(res.data.message);
+              }
+            })
+            .catch((err) => this.$vToastify.error(err.message));
+    },
+
     getmyEvent(id) {
       axios
         .get(this.$hostname + "/post/sudoevent", {
@@ -187,4 +266,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+
+</style>

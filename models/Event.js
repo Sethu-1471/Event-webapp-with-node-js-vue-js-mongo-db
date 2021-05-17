@@ -56,6 +56,24 @@ const EventSchema = new mongoose.Schema({
             type: Date,
             default: Date.now()
         }
+    }],
+    userSaved: [{
+        user: {
+            type: ObjectId,
+            ref: "UserReg"
+        },
+        time: {
+            type: Date,
+            default: Date.now()
+        }
+    }],
+    certificate: {
+    type: Boolean,
+    default: false
+    },
+    feedback: [{
+        name: String,
+        feedback: String
     }]
 })
 

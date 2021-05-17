@@ -20,8 +20,9 @@
                     <v-text-field v-model="phoneNo" label="Phone no" color="deep-purple darken-4"></v-text-field>
                     <v-text-field v-model="email" label="Email" color="deep-purple darken-4"></v-text-field>
                     <v-text-field v-model="password" label="Password" color="deep-purple darken-4" :append-icon="value ? 'mdi-eye' : 'mdi-eye-off'" @click:append="() => (value = !value)" :type="value ? 'password' : 'text'"></v-text-field>
+                    <v-text-field v-model="otp" label="OTP"  color="deep-purple darken-4"></v-text-field>
                     <v-btn class="deep-purple darken-4 white--text" @click="doRegister">
-                        Register
+                        Sign Up
                     </v-btn>
                 </v-card>
             </v-col>

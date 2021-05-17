@@ -48,6 +48,7 @@ const savePost = async (req, res, next) => {
     if (!token) {
         res.json({status: false, message: 'Unauthorized.'});
     } else {
+        console.log(req.body);
         upload(req, res, async (err) => {
             if(req.file == null || req.file == undefined || req.file == ""){
                 res.json({
@@ -90,8 +91,38 @@ const savePost = async (req, res, next) => {
     }
 }
 
+const updateFeedback = async (req, res) => {
+    try {
+        var token = await getToken(req.headers);
+    if (!token) {
+        res.json({ status: false, message: 'Unauthorized.' });
+    } else {
+        var mongoose = require('mongoose');
+        var id = mongoose.Types.ObjectId((req.query.postId));
+        await Event.findOneAndUpdate({ _id: id }, { $push: { "feedback": req.body} }, {
+                                new: true,
+                                runValidators: true,
+                            }).then(response => {
+                                res.json({
+                                    status: true,
+                                    message: "Feedback Posted & Downloading Certificate"
+                                });
+                            }).catch(err => {
+                                res.json({
+                                    status: false,
+                                    message: err.message
+                                });
+                            })
+    }
+    } catch (err) {
+        res.json({
+            status: false,
+            message: err.message
+        });
+    }
+}
+
 const updatePost = async (req, res) => {
-    console.log(req.body.tags)
     var token = await getToken(req.headers);
     if (!token) {
         res.json({ status: false, message: 'Unauthorized.' });
@@ -240,6 +271,8 @@ const getPostByPublic = async(req, res) => {
     }
 }
 
+
+
 const getPostByUserId = async (req, res) => {
     var token = await getToken(req.headers);
     if (!token) {
@@ -247,11 +280,13 @@ const getPostByUserId = async (req, res) => {
     }
     try {
         let events = await Event.find({ "createdBy._id": req.user._id });
-        let rEvents = await User.findById({ _id: req.user._id }).populate("myRegistration")
+        let rEvents = await User.findById({ _id: req.user._id }).populate("myRegistration");
+        let sEvents = await User.findById({ _id: req.user._id }).populate("savedEvents"); 
         res.json({
             status: true,
             myEvents: events.length > 0 ? events : null,
-            registeredEvents: rEvents.myRegistration.length > 0 ? rEvents.myRegistration : null
+            registeredEvents: rEvents.myRegistration.length > 0 ? rEvents.myRegistration : null,
+            savedEvents: sEvents.savedEvents.length > 0 ? sEvents.savedEvents : null
         });
     } catch (err) {
         res.json({
@@ -314,6 +349,49 @@ const getPostByPostId = async(req, res) => {
     }
 }
 
+
+
+const saveEvent = async (req, res) => {
+    try {
+        var token = await getToken(req.headers);
+    if (!token) {
+        res.json({status: false, message: 'Unauthorized.'});
+    } else {
+        var mongoose = require('mongoose');
+        var id = mongoose.Types.ObjectId((req.query.postId));
+        const event = await Event.findOne({
+            _id: id
+        })
+        if (event) {
+            let e = {
+                user: req.user._id
+            }
+            await Event.findOneAndUpdate({_id: id},
+                { $push: { "userSaved": e} }
+            )   
+            await User.findOneAndUpdate({_id: req.user._id},
+                { $push: { savedEvents: id} }
+            )  
+
+            res.json({
+                status: true,
+                message: "You Saved this event",
+            });
+
+        } else {
+            res.json({
+                status: false,
+                message: "No Event Found"
+            });
+        }
+    }
+    } catch (err) {
+        res.json({
+            status: false,
+            message: err.message
+        });
+    }
+}
 
 const attendEvent = async (req, res) => {
     try {
@@ -398,6 +476,87 @@ const unattendEvent = async (req, res) => {
 }
 
 
+const unSaveEvent = async (req, res) => {
+    try {
+        var token = await getToken(req.headers);
+    if (!token) {
+        res.json({status: false, message: 'Unauthorized.'});
+    } else {
+        var mongoose = require('mongoose');
+        var id = mongoose.Types.ObjectId((req.query.postId));
+        const event = await Event.findOne({
+            _id: id
+        })
+        if (event) {
+            await Event.findOneAndUpdate({_id: id},
+                { $pull: { "userSaved": { user: req.user._id }} }
+            )   
+            await User.findOneAndUpdate({_id: req.user._id},
+                { $pull: { savedEvents: id} }
+            )  
+
+            res.json({
+                status: true,
+                message: "You removed event from saved",
+            });
+
+        } else {
+            res.json({
+                status: false,
+                message: "No Event Found"
+            });
+        }
+    }
+    } catch (err) {
+        res.json({
+            status: false,
+            message: err.message
+        });
+    }
+}
+
+const sendCertificate = async (req, res) => {
+    try {
+        var token = await getToken(req.headers);
+        if (!token) {
+            res.json({ status: false, message: 'Unauthorized.' });
+        } else {
+            var mongoose = require('mongoose');
+            var id = mongoose.Types.ObjectId((req.query.postId));
+            let event = await Event.find({ _id: id });
+            if (event[0].createdBy._id != req.user._id.toString()) {
+                res.json({
+                    status: false,
+                    message: "couldnt Update. Unauthorized user"
+                });
+            } else {
+                let event = {
+                    certificate: req.body.certificate
+                }
+                await Event.findOneAndUpdate({ _id: id }, event, {
+                    new: true,
+                    runValidators: true,
+                }).then(response => {
+                    res.json({
+                        status: true,
+                        message: "Certificate Posted"
+                    });
+                }).catch(err => {
+                    res.json({
+                        status: false,
+                        message: err.message
+                    });
+                })
+            }    
+        }
+    } catch (err) {
+        res.json({
+            status: false,
+            message: err.message
+        });
+    }
+}
+
 const getToken = (headers) => {
     if (headers && headers.authorization) {
       var parted = headers.authorization.split(' ');
@@ -411,4 +570,4 @@ const getToken = (headers) => {
     }
 };
   
-module.exports = { savePost, sendMail, updatePost, attendEvent, unattendEvent, getsudoEvent, deletePost, getPostByPublic, getPostByUserId, getPostByPostId }
+module.exports = { savePost, updateFeedback, sendCertificate, sendMail, saveEvent, unSaveEvent, updatePost, attendEvent, unattendEvent, getsudoEvent, deletePost, getPostByPublic, getPostByUserId, getPostByPostId }

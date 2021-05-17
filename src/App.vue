@@ -1,6 +1,6 @@
 <template>
-  <v-app id="body">
-    <v-app-bar app color="white">
+  <v-app id="body" >
+    <v-app-bar app color="white" class="hidden-sm-and-down">
       <div class="d-flex align-center header" @click="$router.push('/')">
         Evenly
       </div>
@@ -55,10 +55,10 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="hidden-sm-and-down">
       <router-view />
     </v-main>
-    <v-footer color="deep-purple darken-4" padless>
+    <v-footer color="deep-purple darken-4" padless class="hidden-sm-and-down">
       <v-row justify="center" no-gutters>
         <v-btn v-for="icon in icons" :key="icon" class="mx-4 white--text" icon>
           <v-icon size="24px">

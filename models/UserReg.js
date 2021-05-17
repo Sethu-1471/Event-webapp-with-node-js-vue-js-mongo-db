@@ -35,7 +35,12 @@ const UserRegSchema = new mongoose.Schema({
     myRegistration: [{
         type: ObjectId,
         ref: "Event"
-    }]
+    }],
+    savedEvents: [{
+        type: ObjectId,
+        ref: "Event"
+    }],
+
 })
 
 module.exports = mongoose.model('UserReg', UserRegSchema)

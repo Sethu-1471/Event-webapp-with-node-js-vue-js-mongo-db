@@ -25,7 +25,7 @@
             @click="$router.push('/event/' + event._id)"
             style="cursor:pointer"
           >
-            {{ event.name }} 
+            {{ event.name }}
           </v-list-item-title>
           <v-list-item-subtitle> </v-list-item-subtitle>
         </v-list-item-content>
@@ -109,6 +109,18 @@
           <v-icon
             class="mr-2"
             small
+            :color="`${event.certificate ? 'green' : 'red'}`"
+          >
+            mdi-buffer
+          </v-icon>
+          <span class="caption grey--text font-weight-light"
+            >Certificate: {{ event.certificate ? "Posted" : "Not Posted" }}
+          </span>
+        </div>
+        <div v-if="admin">
+          <v-icon
+            class="mr-2"
+            small
             :color="`${event.registration ? 'green' : 'red'}`"
           >
             mdi-account-multiple-plus
@@ -179,6 +191,51 @@
             mdi-view-dashboard
           </v-icon>
         </v-btn>
+        <v-btn
+          v-if="user"
+          :color="
+            event.userSaved
+              ? user
+                ? event.userSaved.find((item) => item.user == user._id)
+                  ? 'red'
+                  : 'green'
+                : 'green'
+              : 'red'
+          "
+          small
+          class="white--text"
+          icon
+          :title="
+            event.userSaved
+              ? user
+                ? event.userSaved.find((item) => item.user == user._id)
+                  ? 'Remove from Saved Event'
+                  : 'Save the Event'
+                : 'Save the Event'
+              : 'Remove from Saved Event'
+          "
+          @click="
+            event.userSaved
+              ? user
+                ? event.userSaved.find((item) => item.user == user._id)
+                  ? unSave(event._id)
+                  : save(event._id)
+                : save(event._id)
+              : save(event._id)
+          "
+        >
+          <v-icon small>
+            {{
+              event.userSaved
+                ? user
+                  ? event.userSaved.find((item) => item.user == user._id)
+                    ? "mdi-star-off"
+                    : "mdi-star"
+                  : "mdi-star"
+                : "mdi-star-off"
+            }}
+          </v-icon>
+        </v-btn>
         <v-spacer></v-spacer>
 
         <v-avatar size="34px">
@@ -203,6 +260,8 @@ export default {
     "attend",
     "unAttend",
     "user",
+    "save",
+    "unSave",
   ],
   methods: {
     tConvert(time) {

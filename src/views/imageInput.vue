@@ -45,7 +45,7 @@
         if (file.length>0) {
           let size = imageFile.size / maxSize / maxSize
           if (!imageFile.type.match('image.*')) {
-            // check whether the upload is an image
+            // check whether the upload is an images
             this.errorDialog = true
             this.errorText = 'Please choose an image file'
           } else if (size>1) {
